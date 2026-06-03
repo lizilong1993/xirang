@@ -1,0 +1,16 @@
+# XiRang minimal .gitignore
+
+# Ignore user-generated data directories
+raw/
+wiki/
+logs/
+dashboard/
+
+# Ignore Obsidian local settings
+.obsidian/
+
+# System and editor temp files
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
