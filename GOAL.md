@@ -48,4 +48,6 @@
 - Web Clipper 文件在 `00_webclip/` → 分类，生成 source note，归档
 - Agent 对话保存到 `70_agent_chat/` → 走完整流水线
 - intake 后评估 persona impact，更新 persona
-- intake 后检测冲突 → 标记矛盾/过期 
+- intake 后检测冲突 → 标记矛盾/过期
+
+7. **设计原则 — 不依赖 Obsidian 插件做知识蒸馏**：知识蒸馏由 Agent 直接调用 LLM API 完成，不依赖 Obsidian 插件生态（如 Text Generator、Templater 等）。Obsidian 的价值在于 Markdown 可读性，而非计算能力。 
