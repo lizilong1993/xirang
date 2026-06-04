@@ -1,10 +1,7 @@
-# XiRang minimal .gitignore
+# XiRang .gitignore
 
-# Ignore user-generated data directories
-raw/
-wiki/
-logs/
-dashboard/
+# Ignore inbox (ephemeral staging), archive raw/archived/ is tracked
+raw/inbox/
 
 # Ignore Obsidian local settings
 .obsidian/
@@ -13,4 +10,4 @@ dashboard/
 .DS_Store
 Thumbs.db
 *.tmp
-*.bak
+*.b
