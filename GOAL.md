@@ -50,4 +50,15 @@
 - intake 后评估 persona impact，更新 persona
 - intake 后检测冲突 → 标记矛盾/过期
 
-7. **设计原则 — 不依赖 Obsidian 插件做知识蒸馏**：知识蒸馏由 Agent 直接调用 LLM API 完成，不依赖 Obsidian 插件生态（如 Text Generator、Templater 等）。Obsidian 的价值在于 Markdown 可读性，而非计算能力。 
+7. **设计原则 — 不依赖 Obsidian 插件做知识蒸馏**：知识蒸馏由 Agent 直接调用 LLM API 完成，不依赖 Obsidian 插件生态（如 Text Generator、Templater 等）。Obsidian 的价值在于 Markdown 可读性，而非计算能力。
+
+## Retrieval-first public principle
+
+XiRang 的开源项目保持为简洁公共壳层：只同步可复用的设计原则和验收标准，不提交个人 vault 内容、skills 实现、source notes、logs、raw captures 或生成索引。
+
+检索优先于图谱可视化：系统应将信息分层为「提炼后的知识」「上下文」「证据」「过程材料」。Agent 回答问题时应优先命中提炼后的知识与项目上下文，再按需回溯 source notes 和 registry 获取证据；过程材料不应成为第一检索入口。
+
+验收标准：
+- 开源仓库根目录保持简洁，只保留项目说明、目标、许可和 agent 入口说明。
+- 私有 vault 的 `skills/`、`wiki/`、`raw/`、`logs/`、实体表、检索索引、图谱辅助文件不进入开源仓库。
+- README/GOAL 只同步通用思想，不复制个人路径、个人材料或具体知识库内容。
