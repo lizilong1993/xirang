@@ -6,13 +6,9 @@
 
 > Capture everything. Let knowledge grow.
 
-XiRang is a modular, AI-maintained second knowledge system for Obsidian. Drop files, paste screenshots, save web clippings, or let your AI agents sync their conversations — everything flows through a pipeline that registers, classifies, distills, and archives your knowledge automatically.
+Drop files, paste screenshots, save web pages, or let your agents sync their conversations — XiRang routes everything through a pipeline that registers, classifies, distills, and archives your knowledge. No Obsidian plugins needed.
 
-XiRang uses a **modular design**: Core provides a minimal ingest pipeline, and 8 optional modules (Entity System, Knowledge Cards, Multi-Agent Sync, Scheduled Pipelines, Knowledge Radar, Knowledge Interview, Memory System, Paper Discovery) can be enabled on demand. During initialization, the agent guides you through module selection and asks only what it needs to know.
-
-## Why XiRang
-
-Most knowledge vaults grow into graveyards — collected but never curated. Plugin-based approaches (Templater + Text Generator + Dataview + Copilot) suffer from silent batch failures, cryptic errors, and complex configuration. XiRang bypasses all that: AI agents call LLM APIs directly, no Obsidian plugins required.
+**Modular design.** Core gives you a working ingest pipeline. 8 optional modules (Entity System, Knowledge Cards, Multi-Agent Sync, Scheduled Pipelines, Knowledge Radar, Knowledge Interview, Memory System, Paper Discovery) can be added during setup. The agent asks what you need, then builds it.
 
 ## How it works
 
@@ -22,33 +18,33 @@ paste screenshot / upload file / save web page / agent chat ends
   raw/inbox/{cowork,screenshot,webclip,agent_chat}
        ↓
   AI Agent: register → classify → source note → Persona → MOC → archive
-       ↓  (optional modules extend: entity split → card → radar → interview → ...)
+       ↓  (modules add: entity split → card → radar → interview → ...)
   archive raw/archived/ → Git commit
 ```
 
-### Core (always enabled)
+### Core
 
-- **Auto-ingest pipeline** — receive → QC filter → register → source note → Persona update → MOC → archive → Git, zero manual steps
-- **Persona layer** — per-project user profiling (preferences, patterns, pitfalls) updated on every intake
-- **Retrieval-first** — answer questions by searching: cards → persona → source-notes → registry → memory → web
-- **Safe archival** — raw/archived/ is an immutable evidence chain, Git-tracked
+- **Auto-ingest** — receive → QC → register → source note → Persona → MOC → archive → Git, zero clicks
+- **Persona layer** — per-project profiling (preferences, patterns, pitfalls), updated on every intake
+- **Retrieval-first** — answers draw from: cards → persona → source-notes → registry → memory → web
+- **Safe archival** — raw/archived/ is immutable, Git-tracked
 
-### Optional modules (choose during init)
+### Optional modules
 
-| Module | Description |
+| Module | What it does |
 |--------|-------------|
-| Entity System | Auto-split entities from source notes into wiki articles, dual-axis classification, wikilink enforcement |
-| Knowledge Cards | ≥3 same-domain sources → structured card with evidence table and conflict tracking |
+| Entity System | Split entities from source notes into wiki articles, dual-axis classify, force wikilinks |
+| Knowledge Cards | ≥3 same-domain sources → structured card with evidence table + conflict tracking |
 | Multi-Agent Sync | Auto-sync sessions from Claude Code / Codex / Reasonix / ChatGPT and more |
-| Scheduled Pipelines | Daily sync+extract+report, weekly distillation+health-check+skill optimization |
-| Knowledge Radar | Cross-project tool/technology recommendation engine |
-| Knowledge Interview | Proactively discover knowledge gaps and ask targeted questions |
-| Memory System | Short-term project briefs + long-term distillation + cross-project persistent context |
-| Paper Discovery | Auto-detect DOI/arXiv/PMID and fetch full-text via multi-tool pipeline |
+| Scheduled Pipelines | Daily sync+extract+report, weekly distill+health-check+skill review |
+| Knowledge Radar | Cross-project tool & tech recommendations |
+| Knowledge Interview | Detect knowledge gaps and ask targeted questions |
+| Memory System | Short-term project briefs + long-term distill + cross-project persistent context |
+| Paper Discovery | Detect DOI/arXiv/PMID and fetch full-text via multi-tool pipeline |
 
 ## Setup
 
-Place the repo files in your Obsidian vault root.
+Copy repo files into your Obsidian vault root.
 
 **Claude Code**:
 
@@ -56,66 +52,66 @@ Place the repo files in your Obsidian vault root.
 /goal follow "/path/to/your/vault/GOAL.md"
 ```
 
-**Other agents** (Codex, Cowork, Reasonix, etc.): paste GOAL.md content to the agent and ask it to execute in your vault root.
+**Other agents** (Codex, Cowork, Reasonix): paste GOAL.md content into chat and ask the agent to run it in vault root.
 
 ## Core inbox structure
 
-Optional modules add extra directories (e.g. `wiki/articles/`, `wiki/radar/`, `schedule/`). See GOAL.md for details.
+Modules add extra dirs (`wiki/articles/`, `wiki/radar/`, `schedule/`). See GOAL.md.
 
 ```
 vault/
 ├── raw/
 │   ├── inbox/{00_webclip,20_cowork,30_screenshot,40_manual,50_to_review,70_agent_chat}/
-│   └── archived/YYYY-MM/  # Post-process archive (Git tracked)
-├── wiki/source-notes/  # Lightweight source index + citation
-├── wiki/persona/       # Dynamic-category user profiles
-├── wiki/moc/           # Maps of Content
-├── wiki/index.md       # Vault index
-├── logs/source-registry.csv  # with status + confidence
-├── logs/reports/       # Report directory
-├── skills/             # Modular AI operation rules
-├── AGENTS.md           ← AI rules (entry point)
+│   └── archived/YYYY-MM/
+├── wiki/source-notes/
+├── wiki/persona/
+├── wiki/moc/
+├── wiki/index.md
+├── logs/source-registry.csv
+├── logs/reports/
+├── skills/
+├── AGENTS.md           ← AI rules
 ├── CLAUDE.md           ← points to AGENTS.md
 └── GOAL.md
 ```
 
 ## Screenshot ingestion
 
-Paste or upload screenshots directly in chat. The agent saves to `raw/inbox/30_screenshot/`, extracts visible content (UI state, errors, paths), and creates a source note.
+Paste or upload screenshots in chat. Agent saves to `30_screenshot/`, extracts visible state (errors, paths, UI), writes a source note.
 
-If the agent cannot access attachment bytes, it must report that honestly — no pretending.
+If it can't read attachment bytes, it says so — no pretending.
 
 ## Web Clipper
 
-Install [Obsidian Web Clipper](https://obsidian.com/clipper) browser extension with:
+Install [Obsidian Web Clipper](https://obsidian.com/clipper), set:
 
 - Note location: `raw/inbox/00_webclip`
 - Note name: `{{date|date:"YYYY-MM-DD"}} - {{title}}`
 
-Suggested frontmatter: `capture_channel: webclip`, `processing_status: new`, `domain`, `project`, `source_url`, `captured_at`.
+Frontmatter: `capture_channel`, `processing_status`, `domain`, `project`, `source_url`, `captured_at`.
 
 ## Agent behavior (Core)
 
-| You do | AI responds |
-|--------|-------------|
-| Upload a file in chat | Save to `20_cowork/`, register, source note, archive |
+| You do | Agent does |
+|--------|-----------|
+| Upload a file | Save to `20_cowork/`, register, source note, archive |
 | Paste a screenshot | Save to `30_screenshot/`, extract info, source note, archive |
 | Web Clipper saves a page | Scan `00_webclip/`, classify, source note, archive |
 | Drop files into inbox | Scan, process, archive, Git commit |
 | Ask a question | Search vault → memory → web → model knowledge (tagged) |
 
-> Enabling optional modules extends the pipeline automatically: Module A adds entity split after source notes, Module B distills cards when ≥3 sources accumulate, Module C syncs multi-platform agent sessions, etc.
+Modules extend the pipeline: A adds entity split after source notes, B distills cards when ≥3 sources accumulate, C syncs multi-agent sessions, etc.
 
 ## Credits
 
-- **Andrej Karpathy** — LLM Wiki concept inspiring the knowledge organization
-- **TencentDB Agent Memory** — Four-tier memory pyramid inspiring the Persona layer
-- **isEris** — Practical comparison of Obsidian plugin vs IDE+API script distillation approaches
-- [claude-obsidian](https://github.com/AgriciDaniel/claude-obsidian) — Upstream reference
-- [obsidian-skills](https://github.com/kepano/obsidian-skills) — Upstream reference
-- **[Reasonix](https://reasonix.ai)** — Agent orchestration and knowledge registration framework, daily pipeline tool
-- **DeepSeek** — GOAL.md modularization and agent interaction design assistance
-- **Practice-driven** — Knowledge reconciliation, card distillation, agent chat capture, safe archival evolved from long-term production iteration
+- **Andrej Karpathy** — LLM Wiki concept
+- **TencentDB Agent Memory** — memory pyramid inspiring the Persona layer
+- **isEris** — comparison of Obsidian plugin vs IDE+API distillation approaches
+- [claude-obsidian](https://github.com/AgriciDaniel/claude-obsidian) — upstream reference
+- [obsidian-skills](https://github.com/kepano/obsidian-skills) — upstream reference
+- **[Reasonix](https://reasonix.ai)** — agent orchestration framework, used for daily pipeline
+- **DeepSeek** — GOAL.md modularization and agent interaction design
+- Long-term production iteration — knowledge reconciliation, card distillation, agent chat capture, safe archival
 
 ## License
 

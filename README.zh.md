@@ -1,141 +1,117 @@
 # XiRang / 息壤
 
-[English](./README.md) | [中文](./README.zh.md)
+[English](./README.md)
 
 **由 AI 自动维护的 Obsidian 第二知识系统**
 
-> **XiRang / 息壤——让你的知识像息壤一样，自然生长，生生不息。**
->
 > 捕获一切资料，让知识自行生长。
 
-XiRang（息壤）是一个面向 Obsidian + AI Agent 的本地第二知识系统。用户在对话中上传的文件、粘贴的截图、Web Clipper 保存的网页和手动放入的资料被自动归档到 raw inbox，再由 AI Agent 自动登记、分类、生成 source note、维护 MOC，逐步编译成可追溯的知识网络。
+文件、截图、网页、Agent 对话——丢进来就行。XiRang 自动走完登记、分类、提炼、归档全程。不依赖任何 Obsidian 插件。
 
-XiRang 采用**模块化设计**：Core 提供最小可用的 ingest 流水线，8 个可选模块（实体百科、知识卡片、多源 Agent 同步、定时流水线、知识雷达、知识访谈、记忆系统、论文发现）按需启用。初始化时 Agent 会引导你选择需要的模块，只安装你需要的部分。详见 `GOAL.md`。
+**模块化设计**。Core 给你一套可用的 ingest 流水线。8 个可选模块（实体百科、知识卡片、多源 Agent 同步、定时流水线、知识雷达、知识访谈、记忆系统、论文发现）初始化时按需勾选，Agent 问清楚再动手。
 
-## Why XiRang
-
-大多数人用 Obsidian 收藏大量资料，但很少回去整理。部分方案依赖 Obsidian 插件生态（Templater + Text Generator + Dataview + Copilot）来自动化知识蒸馏，但实践表明：插件方案存在批量处理静默失败、错误信息模糊、运维配置复杂等问题。XiRang 选择用 AI Agent 直接调用 LLM API 完成全过程——你只管丢进来，系统自动处理，不依赖任何 Obsidian 插件。
-
-## How it works
+## 工作流
 
 ```
-你粘贴截图 / 上传文件 / 保存网页 / Agent 对话结束
+粘贴截图 / 上传文件 / 保存网页 / Agent 对话结束
        ↓
   raw/inbox/{cowork,screenshot,webclip,agent_chat}
        ↓
   AI Agent: 登记 → 分类 → source note → Persona → MOC → 归档
-       ↓  （可选模块在此基础上扩展：entity split → card → radar → interview → ...）
+       ↓  （模块扩展：entity split → card → radar → interview → ...）
   原始文件归档 raw/archived/ → Git 提交
 ```
 
-### Core（始终启用）
+### Core（必装）
 
-- **全自动 Ingest 流水线** — 接收材料 → 质量控制过滤 → 注册 → source note → Persona 更新 → MOC → 归档 → Git 提交，全过程无需手动操作
-- **Persona 层** — 每次 intake 更新用户画像（偏好、模式、踩坑记录），动态分类，源自 TencentDB Agent Memory 的四层记忆金字塔
-- **检索优先** — 回答问题时按 cards → persona → source-notes → registry → memory → web 的优先级逐层检索
-- **原始文件安全归档** — raw/archived/ 不可变证据链，按月归档，Git 版本追踪
+- **自动流水线** — 接收 → 质量控制 → 注册 → source note → Persona → MOC → 归档 → Git，不需要手动操作
+- **Persona 层** — 每次 intake 更新用户画像（偏好、模式、踩坑记录），按项目分类维护
+- **检索优先** — 回答时按序命中：cards → persona → source-notes → registry → memory → web
+- **安全归档** — raw/archived/ 不可变，Git 追踪
 
-### 可选模块（初始化时按需勾选）
+### 可选模块
 
-| 模块 | 简介 |
+| 模块 | 说明 |
 |------|------|
-| 实体百科系统 | 从 source note 自动拆分独立实体为百科词条，双轴分类，wikilink 强制执行 |
-| 知识卡片提炼 | ≥3 篇同 domain source → 结构化卡片，含证据表和争议追踪 |
-| 多源 Agent 会话同步 | 自动同步 Claude Code / Codex / Reasonix / ChatGPT 等多平台会话 |
-| 定时流水线 | 每日自动同步+抽取+日报，每周蒸馏+健康检查+skill 优化 |
-| 知识雷达 | 跨项目工具/技术推荐引擎，发现你可能遗漏的有价值工具 |
-| 知识访谈 | 主动发现知识缺口，向用户精准提问并回写答案 |
-| 记忆系统 | 短时项目 brief + 长时记忆蒸馏 + 跨项目全局 persistent context |
-| 论文发现 | 自动检测 DOI/arXiv/PMID，多工具链获取全文 |
+| 实体百科系统 | 从 source note 拆出独立实体创建百科词条，双轴分类，强制 wikilink |
+| 知识卡片提炼 | 同 domain ≥3 篇 → 结构化卡片，带证据表和争议追踪 |
+| 多源 Agent 同步 | 自动同步 Claude Code / Codex / Reasonix / ChatGPT 等多平台会话 |
+| 定时流水线 | 每日自动同步+抽取+日报，每周蒸馏+健康检查+skill review |
+| 知识雷达 | 跨项目工具/技术推荐引擎 |
+| 知识访谈 | 发现知识缺口，精准提问并回写答案 |
+| 记忆系统 | 短时项目 brief + 长时蒸馏 + 跨项目 persistent context |
+| 论文发现 | 检测 DOI/arXiv/PMID，多工具链获取全文 |
 
-## Minimal setup
+## 初始化
 
-将本仓库文件放入你的 Obsidian vault 根目录。
+把仓库文件放到你的 Obsidian vault 根目录。
 
-如果你使用 Claude Code，执行：
+**Claude Code**：
 
 ```bash
 /goal follow "/path/to/your/vault/GOAL.md"
 ```
 
-如果你使用 Claude Cowork、Codex 或其他 agent，把 `GOAL.md` 内容粘贴给 agent，要求它在 vault 根目录执行。
+**其他 agent**（Codex、Cowork、Reasonix 等）：把 GOAL.md 内容粘贴给 agent，告诉它在 vault 根目录执行。
 
-## Inbox structure
+## Core 目录结构
 
-以下为 **Core 基础结构**。可选模块启用后会追加额外目录和文件（如 `wiki/articles/`、`wiki/radar/`、`schedule/` 等），详见 `GOAL.md` 各模块说明。
+模块会额外添加目录（如 `wiki/articles/`、`wiki/radar/`、`schedule/`），详见 GOAL.md。
 
 ```
 vault/
 ├── raw/
 │   ├── inbox/{00_webclip,20_cowork,30_screenshot,40_manual,50_to_review,70_agent_chat}/
-│   └── archived/YYYY-MM/  # 处理后归档（Git tracked）
-├── wiki/source-notes/  # 来源笔记（轻量索引 + citation）
-├── wiki/persona/       # 用户画像（动态分类子目录）
-├── wiki/moc/           # 内容地图
-├── wiki/index.md       # Vault 总索引
-├── logs/source-registry.csv  # 含 status + confidence 状态列
-├── logs/reports/       # 报告目录
-├── skills/             # 模块化 AI 操作规则
-├── AGENTS.md           ← AI 规则（核心入口）
+│   └── archived/YYYY-MM/
+├── wiki/source-notes/
+├── wiki/persona/
+├── wiki/moc/
+├── wiki/index.md
+├── logs/source-registry.csv
+├── logs/reports/
+├── skills/
+├── AGENTS.md           ← AI 规则入口
 ├── CLAUDE.md           ← 指向 AGENTS.md
 └── GOAL.md
 ```
 
-## Screenshot ingestion
+## 截图处理
 
-XiRang 的主路径不需要外部截图工具。直接把截图粘贴或上传到对话中，AI Agent 应将其保存到 `raw/inbox/30_screenshot/`，提取界面状态、错误、路径等信息，生成 source note。
+直接把截图贴到对话里。Agent 保存到 `30_screenshot/`，提取界面信息（错误、路径、状态），生成 source note。
 
-如果当前 Agent 无法访问附件 bytes，它必须明确报告，不得假装已保存。
+如果 Agent 读不到附件，它会告诉你——不会假装存了。
 
-## Web Clipper setup
+## Web Clipper
 
-安装 [Obsidian Web Clipper 浏览器扩展](https://obsidian.com/clipper)，创建或编辑模板：
+安装 [Obsidian Web Clipper](https://obsidian.com/clipper)，配置：
 
 - Note location：`raw/inbox/00_webclip`
 - Note name：`{{date|date:"YYYY-MM-DD"}} - {{title}}`
-- Note content 建议 frontmatter：
 
-```markdown
----
-capture_channel: webclip
-processing_status: new
-domain: unknown
-project: unknown
-source_url: "{{url}}"
-captured_at: "{{date|date:"YYYY-MM-DD HH:mm"}}"
----
+推荐 frontmatter：`capture_channel`、`processing_status`、`domain`、`project`、`source_url`、`captured_at`。
 
-# {{title}}
+## Agent 行为（Core）
 
-Source: {{url}}
+| 你做的事 | Agent 的响应 |
+|----------|-------------|
+| 上传文件 | 保存到 `20_cowork/`，登记，source note，归档 |
+| 粘贴截图 | 保存到 `30_screenshot/`，提取信息，source note，归档 |
+| Web Clipper 保存网页 | 扫描 `00_webclip/`，分类，source note，归档 |
+| 资料丢进 inbox | 扫描处理，归档，Git 提交 |
+| 提问 | 查 vault → 记忆 → web → 模型知识（标注） |
 
-{{content}}
-```
-
-Web Clipper 只负责保存原始网页。分类和编译由 XiRang agents 完成。
-
-## Agent behavior
-
-| 你做的事 | AI 自动响应（Core） |
-|----------|-------------------|
-| 在对话中上传文件 | 保存到 `20_cowork/`，登记来源，生成 source note，归档 |
-| 在对话中粘贴截图 | 保存到 `30_screenshot/`，提取关键信息，生成 source note，归档 |
-| Web Clipper 保存网页 | 扫描 `00_webclip/`，分类，生成 source note，归档 |
-| 放置资料到 inbox | 扫描并处理，归档，Git 提交 |
-| 提问 | 优先检索 vault → 持久化记忆 → web → 模型标注生成 |
-
-> 启用可选模块后，流水线会自动扩展：如 Module A 在 source note 后追加 entity split，Module B 在积累 ≥3 篇后自动提炼卡片，Module C 自动同步多平台 Agent 会话等。
+模块会扩展流水线：A 加 entity split，B 在 ≥3 篇时提炼卡片，C 同步多平台会话，以此类推。
 
 ## Credits
 
-- **Andrej Karpathy** — LLM Wiki 理念启发本项目的知识组织方式
-- **TencentDB Agent Memory** — 四层记忆金字塔（L0-L3）设计启发 Persona 层集成
-- **isEris** — Obsidian 插件 vs IDE+API 脚本知识蒸馏方案的实践对比验证
-- [claude-obsidian](https://github.com/AgriciDaniel/claude-obsidian) — 上游参考方案
-- [obsidian-skills](https://github.com/kepano/obsidian-skills) — 上游参考方案
-- **实践启发** — 知识冲突调和、卡片提炼、Agent 对话保存、归档流程等优化来自本机长期运行与迭代的实践经验
-- **[Reasonix](https://reasonix.ai)** — Agent 编排与知识注册指令框架，本系统的日常流水线编排工具
-- **DeepSeek** — 助力本项目 GOAL.md 模块化重构与智能体交互逻辑设计
+- **Andrej Karpathy** — LLM Wiki 概念启发
+- **TencentDB Agent Memory** — 记忆金字塔启发 Persona 层
+- **isEris** — Obsidian 插件 vs IDE+API 蒸馏方案对比验证
+- [claude-obsidian](https://github.com/AgriciDaniel/claude-obsidian) — 上游参考
+- [obsidian-skills](https://github.com/kepano/obsidian-skills) — 上游参考
+- **[Reasonix](https://reasonix.ai)** — Agent 编排框架，日常流水线工具
+- **DeepSeek** — GOAL.md 模块化与交互逻辑设计
+- 长期迭代实践 — 冲突调和、卡片提炼、会话保存、安全归档
 
 ## License
 
